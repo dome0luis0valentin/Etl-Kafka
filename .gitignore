@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+obtener_token.py
+.env
+
 # C extensions
 *.so
 
