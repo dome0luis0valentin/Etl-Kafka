@@ -3,7 +3,7 @@ import os
 from pprint import pprint
 
 from dotenv import load_dotenv
-from obtener_token import obtener_token
+from obtener_token import obtener_access_token
 
 # Cargar variables de entorno desde el archivo .env
 load_dotenv()
@@ -13,6 +13,7 @@ def obtener_precios_acciones():
     """
     Esta funcion hace una consulta a la API de IOL para las acciones argentinas
     """
+    obtener_access_token()
     token = os.environ.get("ACCESS_TOKEN")
     url = "https://api.invertironline.com/api/v2/Cotizaciones/acciones/argentina/Todos"
     headers = {
@@ -26,8 +27,8 @@ def obtener_precios_acciones():
         return response.json()
         
     except requests.exceptions.RequestException as e:
-        obtener_token()
-        return obtener_precios_acciones()
+        
+        return "Error: " + str(e) + " " + str(response.status_code) + " " + str(response.reason)
         
  
 def obtener_valor(url):
