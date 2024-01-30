@@ -23,12 +23,11 @@ json_schema = StructType([
     StructField('description', StringType(), True)
 ])
 
-# Read data from Kafka topic
+# Read data from Kafka topic, starting from the latest offset
 batch_df = spark.read \
     .format("kafka") \
     .option("kafka.bootstrap.servers", "localhost:9092") \
     .option("subscribe", "empresas") \
-    .option("startingOffsets", "earliest") \
     .load()
 
 # Parse JSON data
@@ -92,7 +91,7 @@ difference_df = difference_df.withColumn("formatted_date", date_format(differenc
 
 # Escribir el resultado en un archivo Parquet
 # difference_df.write \
-#     .partitionBy("formatted_date") \
+#     .partitionBy("formatted_d ate") \
 #     .mode("overwrite") \
 #     .parquet("./resultado/")
 
@@ -101,3 +100,16 @@ difference_df.select("initial_description", "initial_date", "formatted_date", "v
     .mode("overwrite") \
     .parquet("./resultado/")
 
+difference_df.select("initial_description", "initial_date", "formatted_date", "valor_inicial", "valor_actual", "difference", "difference_percentage").show()
+
+total_percentage = difference_df.agg({"difference_percentage": "sum"}).collect()[0][0]
+
+capital_inicial = 1000000
+capital_por_accion = capital_inicial / 10
+percentage_per_action = total_percentage / 10
+gana_por_accion = capital_por_accion * percentage_per_action / 100
+
+ganancia_total = gana_por_accion * 10
+print("\n\n\n\n\n\n\n\n\n")
+print("El total de la variación porcentual es: {:.2f}% por acción. (en promedio)".format(total_percentage/10))
+print(f"La ganancia es de: {ganancia_total:.2f}  pesos.")
