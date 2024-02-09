@@ -9,9 +9,9 @@ echo    "Starting Zookeeper and Kafka"
 $ZK_HOME/bin/zkServer.sh start > /home/valen/etl-kafka/kafka.log 2>&1
 
 echo "Starting Kafka"
-cd $KAFKA_HOME
+cd $KAFKA_HOME 
 
-./bin/kafka-server-start.sh config/server.properties & 
+./bin/kafka-server-start.sh config/server.properties &> /home/valen/etl-kafka/kafka.log
 
 cd /home/valen/etl-kafka/Etl-Kafka
 
@@ -26,8 +26,8 @@ echo "Data fija producida"
 
 echo "Consume data from Kafka"
 
-python simple_empresas.py
-python consumer_fijos.py
+python stream_empresas.py 2> /home/valen/etl-kafka/Etl-Kafka/kafka.log
+python consumer_fijos.py 2> /home/valen/etl-kafka/Etl-Kafka/kafka.log
 
 echo "Finished"
 

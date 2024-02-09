@@ -4,6 +4,8 @@ from pyspark.sql.types import StringType, StructType, StructField, DoubleType
 from pyspark.sql.functions import from_json
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import date_format
+import os
+from datetime import datetime
 
 # Create Spark Session
 spark = SparkSession \
@@ -42,12 +44,16 @@ df_actual = agg_data.orderBy(expr("last_value").desc())
 
 #Cargo los datos iniciales con los que voy a calcular la variación de los valores de las acciones
 
-# df_actual = agg_data.orderBy(expr("last_value").desc()).limit(10)
+# Si los datos iniciales no estan cargados, los calculo
+if not os.path.exists("./datos_iniciales/"):
+    #crea el directorio
+    os.makedirs("./datos_iniciales/")
+    df_actual = agg_data.orderBy(expr("last_value").desc()).limit(10)
 
-# # Write the result to Parquet files
-# df_actual.write \
-#     .mode("overwrite") \
-#     .parquet("./datos_iniciales/")
+    # Write the result to Parquet files
+    df_actual.write \
+        .mode("overwrite") \
+        .parquet("./datos_iniciales/")
 
 # df_actual.show()
 
@@ -116,6 +122,14 @@ percentage_per_action = total_percentage / 10
 gana_por_accion = capital_por_accion * percentage_per_action / 100
 
 ganancia_total = gana_por_accion * 10
-print("\n\n\n\n\n\n\n\n\n")
+print("\n\n\n\n")
 print("El total de la variación porcentual es: {:.2f}% por acción. (en promedio)".format(total_percentage/10))
 print(f"La ganancia es de: {ganancia_total:.2f}  pesos.")
+
+# Open a file text and save the result, whit a actual day 
+with open("resultado.txt", "a") as file:
+    file.write(f"Resultado Empresas\n")
+    file.write(f"Fecha: {datetime.now()}\n")
+    file.write(f"El total de la variación porcentual es: {total_percentage:.2f}% por acción. (en promedio)\n")
+    file.write(f"La ganancia es de: {ganancia_total:.2f}  pesos.\n")
+    file.write("\n\n\n")
