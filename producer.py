@@ -51,7 +51,6 @@ def kafka_producer():
 
     if type(data_acciones) == str:
         data_acciones = obtener_precios_acciones()
-    pprint(data_acciones["titulos"][0])
     data_acciones = modificar_formato_acciones(data_acciones["titulos"])
    
     index = 0

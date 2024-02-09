@@ -49,7 +49,6 @@ def kafka_producer():
 
         for i, diccionario in enumerate(dict):
         #Agregamos el mensaje recibido de la API al topic
-            print(diccionario)
             producer.produce('datos_fijos', key=titulo, value=json.dumps(diccionario))
 
     producer.flush() # Ensure all messages are sent before exiting

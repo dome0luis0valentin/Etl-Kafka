@@ -41,7 +41,7 @@ df_actual = agg_data.orderBy(expr("last_value").desc())
 df_actual.show()
 # Guardar el DataFrame en un archivo Parquet
 
-df_actual.write.mode("overwrite").parquet("./datos_fijos_iniciales")
+# df_actual.write.mode("overwrite").parquet("./datos_fijos_iniciales")
 
 #Cargo los datos iniciales con los que voy a calcular la variación de los valores de las acciones
 
@@ -91,6 +91,12 @@ difference_df.select("name", "initial_date", "formatted_date", "valor_inicial", 
     .partitionBy("name", "formatted_date") \
     .mode("overwrite") \
     .parquet("./resultado/")
+
+# Guardo la tabla resultado en un archivo txt
+difference_df.select("name", "initial_date", "formatted_date", "valor_inicial", "valor_actual", "difference", "difference_percentage").write \
+    .partitionBy("name", "formatted_date") \
+    .mode("overwrite") \
+    .csv("./resultado_datos_fijos.txt")
 
 difference_df.select("name", "initial_date", "formatted_date", "valor_inicial", "valor_actual", "difference", "difference_percentage").show()
 

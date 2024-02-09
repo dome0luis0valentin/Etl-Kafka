@@ -102,6 +102,12 @@ difference_df.select("initial_description", "initial_date", "formatted_date", "v
 
 difference_df.select("initial_description", "initial_date", "formatted_date", "valor_inicial", "valor_actual", "difference", "difference_percentage").show()
 
+# Guardo la tabla resultado en un archivo txt
+difference_df.select("initial_description", "initial_date", "formatted_date", "valor_inicial", "valor_actual", "difference", "difference_percentage").write \
+    .partitionBy("formatted_date") \
+    .mode("overwrite") \
+    .csv("resultado_empresas.txt")
+
 total_percentage = difference_df.agg({"difference_percentage": "sum"}).collect()[0][0]
 
 capital_inicial = 1000000
